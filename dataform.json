@@ -1,0 +1,10 @@
+{
+  "defaultSchema": "dataform",
+  "assertionSchema": "dataform_assertions",
+  "warehouse": "bigquery",
+  "defaultDatabase": "analytics",
+  "defaultLocation": "US",
+  "vars": {
+    "load_id": "load_id"
+  }
+}
