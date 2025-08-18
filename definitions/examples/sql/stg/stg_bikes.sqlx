@@ -3,19 +3,12 @@ config {
   schema: "citibike_stage_sql",
   name: "stg_sql_bikes",
   description: "Cleaned up data for bikes data source",
-  columns: models.bikes.columns_descriptions,
+  columns: models.bikes.columns.map(c => ({name: c.name, description: c.description})),
   tags: ["stage-sql"],
-   bigquery: {
+  bigquery: {
     partitionBy: "DATE(load_time)",
     clusterBy: ["load_id"]
   }
 }
 
-
-${
-  dvform.get_stage_table(
-    dataform.projectConfig.vars.load_id, 
-    ref("src_sql_bikes"), 
-    models.bikes.columns
-  )
-}
+${custom_macros.get_stage_table(dataform.projectConfig.vars.load_id, ref("src_sql_bikes"), models.bikes.columns)}
