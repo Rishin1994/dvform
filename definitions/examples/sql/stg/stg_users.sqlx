@@ -5,18 +5,11 @@ config {
   description: "Cleaned up data for users data source",
   columns: models.users.columns_descriptions,
   tags: ["stage-sql"],
-   bigquery: {
+  bigquery: {
     partitionBy: "DATE(load_time)",
     clusterBy: ["load_id"]
   }
 }
 
-
-
-${
-  dvform.get_stage_table(
-    dataform.projectConfig.vars.load_id,
-    ref("src_sql_users"), 
-    models.users.columns
-  )
-}
+${custom_macros.get_stage_table(dataform.projectConfig.vars.load_id, ref("src_sql_users"), models.users.columns)}
+${when(incremental(), `where false`)}  -- No timestamp for incremental filter; use type: "table" with uniqueKey if dedup needed instead

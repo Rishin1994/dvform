@@ -132,9 +132,9 @@ var trips_columns= [
     "description": "Start Time, in NYC local time."
   },
   {
-    "source_column_name": "stop_time",
+    "source_column_name": "end_time",
     "source_data_type": "datetime",
-    "target_column_name": "stop_time",
+    "target_column_name": "end_time",
     "target_data_type": "datetime",
     "is_key": "N",
     "is_calculated": "N",
@@ -218,9 +218,9 @@ var stations_columns =  [
     "description": "ID of the region where station is located."
   },
   {
-    "source_column_name": "rental_methods",
+    "source_column_name": "rental_method",
     "source_data_type": "string",
-    "target_column_name": "rental_methods",
+    "target_column_name": "rental_method",
     "target_data_type": "string",
     "is_key": "N",
     "is_calculated": "N",

@@ -5,19 +5,21 @@ function is_empty(col) {
 function get_transformed_cols(table_model) {
   if (is_empty(table_model)) return '*';
   return table_model.map(col => {
-    if (col.transformation) return `${col.transformation} as ${col.name}`;
-    return col.name;
+    if (col.transformation) return `${col.transformation} as ${col.target_column_name}`;
+    return col.target_column_name;
   }).join(',\n');
 }
 
-function get_stage_table(load_id, table_name, table_model) {
-  let cols = get_transformed_cols(table_model);
-  return `
-    select
-      '${load_id}' as load_id,
-      current_timestamp() as load_time,
-      'unknown' as file_name,  -- Hardcoded to avoid dependency on source _file_name column
-      ${cols}
-    from ${table_name}
-  `;
-}
+module.exports = {
+  get_stage_table: function(load_id, table_name, table_model) {
+    let cols = get_transformed_cols(table_model);
+    return `
+      select
+        '${load_id}' as load_id,
+        current_timestamp() as load_time,
+        'unknown' as file_name,  -- Hardcoded to avoid dependency on source _file_name column
+        ${cols}
+      from ${table_name}
+    `;
+  }
+};
