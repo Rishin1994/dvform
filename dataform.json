@@ -1,10 +1,10 @@
 {
-  "defaultSchema": "dataform",
+  "defaultSchema": "dataform_stage",
   "assertionSchema": "dataform_assertions",
   "warehouse": "bigquery",
-  "defaultDatabase": "analytics",
+  "defaultDatabase": "leafy-mountain-469410-k3",
   "defaultLocation": "US",
   "vars": {
-    "load_id": "load_id"
+    "load_id": "asia-south2"
   }
 }

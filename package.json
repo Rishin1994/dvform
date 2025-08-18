@@ -1,7 +1,8 @@
 {
-  "name": "dvform",
+  "name": "dvform-city-bike-demo",
   "dependencies": {
     "@dataform/core": "2.0.1",
-    "md5": "^2.3.0"
+    "md5": "^2.3.0",
+    "dvform": "https://github.com/mokhahmed/dvform/archive/0.1.1.tar.gz"
   }
 }
