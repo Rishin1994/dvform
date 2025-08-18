@@ -16,7 +16,7 @@ function get_stage_table(load_id, table_name, table_model) {
     select
       '${load_id}' as load_id,
       current_timestamp() as load_time,
-      'unknown' as file_name,  -- Hardcoded dummy value to avoid source column dependency
+      'unknown' as file_name,  -- Hardcoded to avoid dependency on source _file_name column
       ${cols}
     from ${table_name}
   `;
