@@ -1,0 +1,44 @@
+-- definitions/examples/sql/rdvm/sats/ext_track_sat_trips.sqlx
+config {
+  type: "incremental",
+  schema: "citibike_sql_dvm",
+  tags: ["rdv", "satellite", "extended-tracking"],
+  uniqueKey: ["ext_track_hash_id"]   // must be an array
+}
+
+WITH base AS (
+  SELECT
+    -- Trip BK (aligned with your link/stage keys)
+    FARM_FINGERPRINT(CONCAT(
+      CAST(user_id AS STRING),
+      CAST(bike_id AS STRING),
+      CAST(start_station_id AS STRING),
+      CAST(end_station_id AS STRING),
+      CAST(start_time AS STRING)
+    )) AS trip_hash_id,
+
+    -- Extended tracking fields derived from stage
+    'citibike' AS source_system,
+    CAST(SESSION_USER() AS STRING) AS load_user,      -- principal running the job
+    CAST(file_name AS STRING) AS audit_details,       -- from your stage macro
+    CURRENT_TIMESTAMP() AS load_time
+  FROM ${ref("stg_sql_trips")}
+)
+
+SELECT
+  -- one ETS row per (trip_hash_id, source_system, load_user)
+  FARM_FINGERPRINT(CONCAT(
+    CAST(trip_hash_id AS STRING), '|', source_system, '|', load_user
+  )) AS ext_track_hash_id,
+
+  trip_hash_id,
+  FARM_FINGERPRINT(CONCAT(
+    source_system, '|', load_user, '|', COALESCE(audit_details, '')
+  )) AS hash_diff,
+
+  source_system,
+  load_user,
+  audit_details,
+  'citibike' AS source,
+  load_time
+FROM base

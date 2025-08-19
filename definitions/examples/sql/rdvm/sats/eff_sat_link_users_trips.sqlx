@@ -1,0 +1,42 @@
+config {
+  type: "incremental",
+  schema: "citibike_sql_dvm",
+  tags: ["rdv", "satellite", "effectivity"],
+  uniqueKey: ["effectivity_hash_id"]
+}
+
+-- Effective Satellite for LINK: t_link_trips
+-- Keying: one row per (link_hash_id, effective_start_date)
+SELECT
+  -- effectivity row key: link + start boundary
+  FARM_FINGERPRINT(CONCAT(
+    CAST(L.trip_transaction_hash_id AS STRING),
+    CAST(S.start_time AS STRING)
+  )) AS effectivity_hash_id,
+
+  -- foreign key to link
+  L.trip_transaction_hash_id AS link_hash_id,
+
+  -- effectivity bounds
+  S.start_time AS effective_start_date,
+  COALESCE(
+    LEAD(S.start_time) OVER (
+      PARTITION BY L.trip_transaction_hash_id
+      ORDER BY S.start_time
+    ),
+    TIMESTAMP('9999-12-31')
+  ) AS effective_end_date,
+
+  -- lineage
+  'citibike' AS source,
+  CURRENT_TIMESTAMP() AS load_time
+
+FROM ${ref("stg_sql_trips")} AS S
+JOIN ${ref("t_link_trips")} AS L
+  ON L.trip_transaction_hash_id = FARM_FINGERPRINT(CONCAT(
+       CAST(S.user_id AS STRING),
+       CAST(S.bike_id AS STRING),
+       CAST(S.start_station_id AS STRING),
+       CAST(S.end_station_id AS STRING),
+       CAST(S.start_time AS STRING)
+     ))

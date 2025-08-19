@@ -1,0 +1,17 @@
+config {
+  type: "incremental",
+  schema: "citibike_sql_dvm",
+  tags: ["rdv", "t-link"],
+  uniqueKey: ["trip_transaction_hash_id"]  
+}
+
+SELECT
+  FARM_FINGERPRINT(CONCAT(CAST(user_id AS STRING), CAST(bike_id AS STRING), CAST(start_station_id AS STRING), CAST(end_station_id AS STRING), CAST(start_time AS STRING))) AS trip_transaction_hash_id,
+  FARM_FINGERPRINT(CAST(user_id AS STRING)) AS user_hash_id,
+  FARM_FINGERPRINT(CAST(bike_id AS STRING)) AS bike_hash_id,
+  FARM_FINGERPRINT(CAST(start_station_id AS STRING)) AS start_station_hash_id,
+  FARM_FINGERPRINT(CAST(end_station_id AS STRING)) AS end_station_hash_id,
+  trip_duration AS degenerate_duration,
+  'citibike' AS source,
+  CURRENT_TIMESTAMP() AS load_time
+FROM ${ref("stg_sql_trips")}
