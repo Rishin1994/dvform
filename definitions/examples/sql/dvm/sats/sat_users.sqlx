@@ -5,7 +5,7 @@ config {
   columns: models.users.columns_descriptions,
   description: "satellite users table",
   uniqueKey: ["users_hash_id", "hash_diff"],
-  tags: ["data-vault-sql"]
+  tags: ["data-vault-sql_sat"]
 }
 
 ${

@@ -6,7 +6,7 @@ config {
   columns: models.users.columns_descriptions,
   description: "hub users table",
   uniqueKey: ["users_hash_id"],
-  tags: ["data-vault-sql"]
+  tags: ["data-vault-sql_hubs"]
 }
 
 ${

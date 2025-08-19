@@ -4,7 +4,7 @@ config {
   name: "link_sql_bikes_trips",
   description: "bikes trips link table",
   uniqueKey: ["bikes_trips_hash_id"],
-  tags: ["data-vault-sql"]
+  tags: ["data-vault-sql_links"]
 }
 
 ${

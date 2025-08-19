@@ -6,7 +6,7 @@ config {
   columns: models.trips.columns_descriptions,
   description: "hub trips table",
   uniqueKey: ["trips_hash_id"],
-  tags: ["data-vault-sql"]
+  tags: ["data-vault-sql_hubs"]
 }
 
 ${
