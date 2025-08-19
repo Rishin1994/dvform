@@ -3,7 +3,7 @@ config {
   schema: "citibike_sql_dvm",
   name: "link_sql_bikes_trips",
   description: "bikes trips link table",
-  uniqueKey: ["bikes_trips_hash_id"],
+  uniqueKey: ["bikes_trip_hash_id"],
   tags: ["data-vault-sql_links"]
 }
 
@@ -19,4 +19,3 @@ ${
         "bikes_trip_hash_id"
     )
 }
-  

@@ -4,7 +4,7 @@ config {
   name: "stg_sql_trips",
   description: "Cleaned up data for trips data source",
   columns: models.trips.columns_descriptions,
-  tags: ["stage-sql"],
+  tags: ["stage-sql_tag"],
   bigquery: {
     partitionBy: "DATE(load_time)",
     clusterBy: ["load_id"]
