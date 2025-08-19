@@ -1,0 +1,29 @@
+-- definitions/examples/sql/bdvm/as_of_date_trips.sqlx
+config {
+  type: "view",
+  schema: "citibike_sql_bdvm",
+  name: "as_of_date_trips",
+  tags: ["bdv", "as-of-date"]
+}
+
+SELECT
+  HT.trips_hash_id                    AS trip_hash_id,
+  HU.user_id,
+  HB.bike_id,
+  --ST.start_station_id,
+  --ST.end_station_id,
+  ST.start_time,
+  ST.end_time,
+  ST.trip_duration
+FROM ${ref("sat_sql_trips")}       AS ST
+JOIN ${ref("hub_sql_trips")}       AS HT  ON HT.trips_hash_id    = ST.trips_hash_id
+
+-- user via link → hub
+LEFT JOIN ${ref("link_sql_users_trips")}  AS LUS ON LUS.trips_hash_id = HT.trips_hash_id
+LEFT JOIN ${ref("hub_sql_users")}         AS HU  ON HU.users_hash_id  = LUS.users_hash_id
+
+-- bike via link → hub
+LEFT JOIN ${ref("link_sql_bikes_trips")}  AS LBT ON LBT.trips_hash_id = HT.trips_hash_id
+LEFT JOIN ${ref("hub_sql_bikes")}         AS HB  ON HB.bikes_hash_id  = LBT.bikes_hash_id
+
+WHERE ST.load_time <= CURRENT_TIMESTAMP()

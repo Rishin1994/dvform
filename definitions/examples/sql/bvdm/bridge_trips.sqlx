@@ -1,0 +1,48 @@
+-- definitions/examples/sql/bdvm/bridge_trips.sqlx
+config {
+  type: "view",
+  schema: "citibike_sql_bdvm",
+  name: "bridge_sql_trips",
+  tags: ["bdv", "bridge"]
+}
+
+WITH trip_station_hashes AS (
+  SELECT
+    -- recompute the trip hash exactly like hubs/links
+    FARM_FINGERPRINT(CONCAT(
+      CAST(user_id AS STRING),
+      CAST(bike_id AS STRING),
+      CAST(start_station_id AS STRING),
+      CAST(end_station_id AS STRING),
+      CAST(start_time AS STRING)
+    )) AS trips_hash_id,                           -- INT64
+
+    -- station hashes (hub BKs)
+    FARM_FINGERPRINT(CAST(start_station_id AS STRING)) AS start_station_hash_id,  -- INT64
+    FARM_FINGERPRINT(CAST(end_station_id   AS STRING)) AS end_station_hash_id     -- INT64
+  FROM ${ref("stg_sql_trips")}
+)
+
+SELECT
+  HT.trips_hash_id                  AS trip_hash_id,
+  HU.users_hash_id                  AS user_hash_id,
+  HB.bikes_hash_id                  AS bike_hash_id,
+  TS.start_station_hash_id,
+  TS.end_station_hash_id
+FROM ${ref("hub_sql_trips")} AS HT
+
+-- user via link → hub
+LEFT JOIN ${ref("link_sql_users_trips")} AS LUS
+  ON CAST(LUS.trips_hash_id AS STRING) = CAST(HT.trips_hash_id AS STRING)
+LEFT JOIN ${ref("hub_sql_users")} AS HU
+  ON CAST(HU.users_hash_id  AS STRING) = CAST(LUS.users_hash_id AS STRING)
+
+-- bike via link → hub
+LEFT JOIN ${ref("link_sql_bikes_trips")} AS LBT
+  ON CAST(LBT.trips_hash_id AS STRING) = CAST(HT.trips_hash_id AS STRING)
+LEFT JOIN ${ref("hub_sql_bikes")} AS HB
+  ON CAST(HB.bikes_hash_id  AS STRING) = CAST(LBT.bikes_hash_id AS STRING)
+
+-- stations derived from stage, align by trip hash
+LEFT JOIN trip_station_hashes AS TS
+  ON CAST(TS.trips_hash_id   AS STRING) = CAST(HT.trips_hash_id AS STRING)

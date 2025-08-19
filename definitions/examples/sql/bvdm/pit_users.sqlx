@@ -1,0 +1,38 @@
+-- definitions/examples/sql/bdvm/pit_users.sqlx
+config {
+  type: "table",
+  schema: "citibike_sql_bdvm",
+  name: "pit_sql_users",
+  tags: ["bdv", "pit"]
+}
+
+WITH pit AS (
+  -- Replace CURRENT_TIMESTAMP() with a parameter if needed
+  SELECT CURRENT_TIMESTAMP() AS pit_ts
+),
+sat_asof AS (
+  SELECT
+    s.*,
+    p.pit_ts,
+    ROW_NUMBER() OVER (
+      PARTITION BY s.users_hash_id
+      ORDER BY s.load_time DESC
+    ) AS rn
+  FROM ${ref("sat_sql_users")} s
+  JOIN pit p
+    ON s.load_time <= p.pit_ts
+)
+
+SELECT
+  h.users_hash_id               AS user_hash_id,
+  s.user_type,
+  s.gender,
+  s.birth_year,
+  s.customer_plan,
+  p.pit_ts                      AS point_in_time
+FROM ${ref("hub_sql_users")} h
+CROSS JOIN pit p
+LEFT JOIN (
+  SELECT * FROM sat_asof WHERE rn = 1
+) s
+  ON s.users_hash_id = h.users_hash_id

@@ -1,0 +1,29 @@
+-- definitions/examples/sql/rdvm/sats/multi_active_sat_users_plans.sqlx
+config {
+  type: "incremental",
+  schema: "citibike_sql_dvm",
+  tags: ["rdv", "satellite", "multi-active"],
+  uniqueKey: ["user_hash_id", "subkey"]   // one row per (user, customer_plan)
+}
+
+SELECT
+  -- parent hub BK (users)
+  FARM_FINGERPRINT(CAST(S.user_id AS STRING)) AS user_hash_id,
+
+  -- multi-active discriminator (plan dimension)
+  -- coalesce to avoid NULL creating duplicate keys across runs
+  COALESCE(CAST(S.customer_plan AS STRING), '__NULL__') AS subkey,
+
+  -- change detector for attributes you track in this sat
+  FARM_FINGERPRINT(CONCAT(
+    COALESCE(CAST(S.customer_plan AS STRING), ''), '|',
+    COALESCE(CAST(S.user_type     AS STRING), '')
+  )) AS hash_diff,
+
+  -- attributes kept in this satellite
+  S.customer_plan,
+  S.user_type,
+
+  'citibike' AS source,
+  CURRENT_TIMESTAMP() AS load_time
+FROM ${ref("stg_sql_users")} AS S
