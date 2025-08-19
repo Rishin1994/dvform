@@ -1,15 +1,13 @@
 config {
-  type: "incremental",
+  type: "view",
   schema: "citibike_stage_sql",
   name: "stg_sql_stations",
-  description: "Cleaned up data for stations data source",
-  columns: models.stations.columns_descriptions,
-  tags: ["stage-sql_tag"],
-  bigquery: {
-    partitionBy: "DATE(load_time)",
-    clusterBy: ["load_id"]
-  }
+  description: "Stage view for stations",
+  tags: ["stage-sql_tag"]
 }
 
-${custom_macros.get_stage_table(dataform.projectConfig.vars.load_id, ref("src_sql_stations"), models.stations.columns)}
-${when(incremental(), `where last_reported > (select max(load_time) from ${self()})`)}
+${custom_macros.get_stage_table(
+  dataform.projectConfig.vars.load_id,
+  ref("src_sql_stations"),
+  models.stations.columns
+)}

@@ -1,20 +1,9 @@
 config {
-  type: "incremental",
+  type: "view",
   schema: "citibike_stage_sql",
   name: "stg_sql_trips",
-  description: "Cleaned up data for trips data source",
-  tags: ["stage-sql_tag"],
-  bigquery: {
-    partitionBy: "DATE(load_time)",
-    clusterBy: ["load_id"]
-  },
-  uniqueKey: [
-    "user_id",
-    "bike_id",
-    "start_station_id",
-    "end_station_id",
-    "start_time"
-  ]
+  description: "Stage view for trips",
+  tags: ["stage-sql_tag"]
 }
 
 ${custom_macros.get_stage_table(
