@@ -6,7 +6,7 @@ config {
   columns: models.bikes.columns_descriptions,
   description: "satellite bikes table",
   uniqueKey: ["bikes_hash_id", "hash_diff"],
-  tags: ["data-vault-sql"]
+  tags: ["data-vault-sql_sat"]
 }
 
 ${

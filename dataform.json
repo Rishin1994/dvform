@@ -1,0 +1,13 @@
+{
+  "warehouse": "bigquery",
+  "defaultDatabase": "leafy-mountain-469410-k3",
+  "defaultSchema": "citibike_dv",  
+  "defaultLocation": "asia-south2",
+  "assertionSchema": "citibike_dv_assertions",
+  "vars": {
+    "source_schema": "citibike_source_sql",
+    "raw_schema": "citibike_sql_dvm",  
+    "biz_schema": "citibike_biz",
+    "load_id": "${dataform.currentTimestamp()}" 
+  }
+}
