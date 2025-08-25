@@ -64,6 +64,7 @@ Citibike entities are ingested into Stage Layer where we are keeping the data wi
 So we need to change the citibike data model as below to store it at the **data vault Layer**
 
 ![alt citibike_data_vault_model](resources/citibike-datavault-model.png) 
+<img width="531" height="433" alt="image" src="https://github.com/user-attachments/assets/25260f6a-5825-4228-abf3-8a79fb3849fc" />
 
 ## How to use DVForm to create a data vault model ? 
 
