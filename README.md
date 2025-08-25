@@ -66,6 +66,16 @@ So we need to change the citibike data model as below to store it at the **data 
 ![alt citibike_data_vault_model](resources/citibike-datavault-model.png) 
 <img width="531" height="433" alt="image" src="https://github.com/user-attachments/assets/25260f6a-5825-4228-abf3-8a79fb3849fc" />
 
+| Column                   | Description                                                                                                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T\_LINK\_TRIPS\_PK**   | A new **String column** that serves as the **hash key** for the transactional link, generated from the concatenation of all participating business keys (e.g., `md5(user_pk, bike_pk, start_station_pk, end_station_pk)`). |
+| **USER\_HASH\_ID**       | Foreign key reference to the **User Hub** (`HUB_USERS`). Identifies the user participating in the trip.                                                                                                                    |
+| **BIKE\_HASH\_ID**       | Foreign key reference to the **Bike Hub** (`HUB_BIKES`). Identifies the bike involved in the trip.                                                                                                                         |
+| **START\_STATION\_HASH** | Foreign key reference to the **Station Hub** (`HUB_STATIONS`). Represents the station where the trip started.                                                                                                              |
+| **END\_STATION\_HASH**   | Foreign key reference to the **Station Hub** (`HUB_STATIONS`). Represents the station where the trip ended.                                                                                                                |
+| **SOURCE**               | A new **String column** to capture the data source / system from which the trip record originated.                                                                                                                         |
+| **LOAD\_TIME**           | A **Timestamp column** representing the ingestion/load time of the trip event into the vault.                                                                                                                              |
+
 ## How to use DVForm to create a data vault model ? 
 
 DVForm is a utility library based on Dataform that allow you to create easily create you data vault model in a generic, automated and configurable way.
