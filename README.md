@@ -75,6 +75,14 @@ So we need to change the citibike data model as below to store it at the **data 
 | **END\_STATION\_HASH**   | Foreign key reference to the **Station Hub** (`HUB_STATIONS`). Represents the station where the trip ended.                                                                                                                |
 | **SOURCE**               | A new **String column** to capture the data source / system from which the trip record originated.                                                                                                                         |
 | **LOAD\_TIME**           | A **Timestamp column** representing the ingestion/load time of the trip event into the vault.                                                                                                                              |
+🔎 What is a T-Link?
+
+A T-Link (Transactional Link) is a special type of Link in Data Vault 2.0 that connects multiple hubs (or sometimes other links) at a transactional grain.
+
+It captures the actual business event that occurs — in your case, a trip.
+
+Unlike a standard Link (which is timeless and just says “a relationship exists”), a T-Link is event-driven: it tells us “this specific trip happened, involving this user, this bike, this start station, and this end station, at this time.”
+
 
 ## How to use DVForm to create a data vault model ? 
 
