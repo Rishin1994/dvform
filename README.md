@@ -84,6 +84,9 @@ It captures the actual business event that occurs — in your case, a trip.
 Unlike a standard Link (which is timeless and just says “a relationship exists”), a T-Link is event-driven: it tells us “this specific trip happened, involving this user, this bike, this start station, and this end station, at this time.”
 
 
+<img width="900" height="299" alt="image" src="https://github.com/user-attachments/assets/3367cbab-e4bb-4feb-8818-eb34786f129e" />
+
+
 ## How to use DVForm to create a data vault model ? 
 
 DVForm is a utility library based on Dataform that allow you to create easily create you data vault model in a generic, automated and configurable way.
